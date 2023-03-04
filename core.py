@@ -1,26 +1,29 @@
-from sqlalchemy import create_engine, ForeignKey, Column, String, Integer, CHAR
+from sqlalchemy import create_engine, ForeignKey, Column, String, delete, update, Integer, CHAR
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import random
 import requests
-import time
 
 #=========
 #= W.I.P =
 #=========
 
-def start():
+#ATENEA PROJECT BY XABIA & OMICRON
+print("[ONLY 1.000 LOOKUPS] LIMITED!")
+
+for i in range(10):
+    
     iplist = []
     newIP = "0.0.0.0"
+    
     def generateip():
         for i in range(4):
             iplist.append(random.randint(1, 255))
         
-
     generateip()
-
     newIP = ".".join(str(i) for i in iplist)
     iplist.clear()
+    
     print("New IP: ", newIP)
     print(iplist)
 
@@ -40,6 +43,13 @@ def start():
     latitudeData = response.get("latitude")
     longitudeData = response.get("longitude")
 
+    print(countryData)
+
+    if countryData == None:
+        print("[INVALID DIRECTION DETECTED] = ", newIP)
+        continue
+    else:
+        pass
 
     Base = declarative_base()
     #==========
@@ -61,8 +71,9 @@ def start():
         zip = Column("Zip", String)
         latitude = Column("Latitude", String)
         longitude = Column("Longitude", String)
-        
-        
+
+               
+
     
         #Se ponen "APODOS" a las variables
         def __init__(self, ip, country, countrycode, region, regioncode, city, zip, latitude, longitude):
@@ -87,13 +98,11 @@ def start():
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    #GUARDADO DE DATOS
+    delete(Atenea).where(Atenea.country == None)
+    update(Atenea)
 
-    generateip()
+    #GUARDADO DE DATOS
     newdata = Atenea(ip, countryData, countryDataCode, regionData, regionDataCode, cityData, zipData, latitudeData, longitudeData)
     session.add(newdata)
     session.commit()
-    time.sleep(0.1)
-    start()
-
-start()
+    

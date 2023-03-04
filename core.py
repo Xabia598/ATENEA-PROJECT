@@ -9,7 +9,7 @@ import requests
 #=========
 
 #ATENEA PROJECT BY XABIA & OMICRON
-print("[ONLY 1.000 LOOKUPS] LIMITED!")
+print("[ONLY 1.000 LOOKUPS]")
 
 for i in range(10):
     
@@ -30,7 +30,7 @@ for i in range(10):
     #network=input("Enter the IP you want to scan and save:  ")
 
     ip_address = newIP
-    response = requests.get(f'https://ipapi.co/{ip_address}/json/').json()
+    response = requests.get(f'https://ipapi.co/{ip_address}/json/').json() #CHANGE TO IPINFO.IO !!!!
 
     ip = ip_address
 

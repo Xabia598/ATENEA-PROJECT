@@ -12,44 +12,38 @@ import requests
 print("[ONLY 1.000 LOOKUPS]")
 
 for i in range(10):
-    
+
     iplist = []
-    newIP = "0.0.0.0"
-    
-    def generateip():
-        for i in range(4):
-            iplist.append(random.randint(1, 255))
-        
-    generateip()
-    newIP = ".".join(str(i) for i in iplist)
+
+    for i in range(4):
+        iplist.append(str(random.randint(1, 255)))
+
+    newIP = ".".join(iplist)
     iplist.clear()
-    
+
     print("New IP: ", newIP)
     print(iplist)
 
     #network=input("Enter the IP you want to scan and save:  ")
 
-    ip_address = newIP
-    response = requests.get(f'https://ipapi.co/{ip_address}/json/').json() #CHANGE TO IPINFO.IO !!!!
+    req = requests.get(f'https://ipapi.co/{newIP}/json/') #CHANGE TO IPINFO.IO !!!!
+    response = req.json()
 
-    ip = ip_address
+    #cityData = response.get("city")
+    #countryData = response.get("country_name")
+    #countryDataCode = response.get("country_code")
+    #regionData = response.get("region")
+    #regionDataCode = response.get("region_code")
+    #zipData = response.get("zip")
+    #latitudeData = response.get("latitude")
+    #longitudeData = response.get("longitude")
 
-    cityData = response.get("city")
-    countryData = response.get("country_name")
-    countryDataCode = response.get("country_code")
-    regionData = response.get("region")
-    regionDataCode = response.get("region_code")
-    zipData = response.get("zip")
-    latitudeData = response.get("latitude")
-    longitudeData = response.get("longitude")
+    print(response["countryData"])
 
-    print(countryData)
-
-    if countryData == None:
+    # try using req.status_code
+    if response["countryData"] == None:
         print("[INVALID DIRECTION DETECTED] = ", newIP)
         continue
-    else:
-        pass
 
     Base = declarative_base()
     #==========
@@ -72,9 +66,6 @@ for i in range(10):
         latitude = Column("Latitude", String)
         longitude = Column("Longitude", String)
 
-               
-
-    
         #Se ponen "APODOS" a las variables
         def __init__(self, ip, country, countrycode, region, regioncode, city, zip, latitude, longitude):
             self.ip = ip
@@ -86,11 +77,10 @@ for i in range(10):
             self.zip = zip
             self.latitude = latitude
             self.longitude = longitude
-            
 
         def __repr__(self):
             return f"({self.ip}) {self.country} {self.countrycode} {self.region} {self.regioncode} {self.city} {self.zip} {self.latitude} {self.longitude})"
-        
+
 
     engine  = create_engine("sqlite:///atenea.db", echo=True)
     Base.metadata.create_all(bind=engine)
@@ -102,7 +92,15 @@ for i in range(10):
     update(Atenea)
 
     #GUARDADO DE DATOS
-    newdata = Atenea(ip, countryData, countryDataCode, regionData, regionDataCode, cityData, zipData, latitudeData, longitudeData)
+    newdata = Atenea(newIP, 
+                    response["countryData"],
+                    response["countryDataCode"],
+                    response["regionData"],
+                    response["regionDataCode"],
+                    response["cityData"],
+                    response["zipData"],
+                    response["latitudeData"],
+                    response["longitudeData"]
+                )
     session.add(newdata)
     session.commit()
-    

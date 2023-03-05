@@ -38,10 +38,10 @@ for i in range(10):
     #latitudeData = response.get("latitude")
     #longitudeData = response.get("longitude")
 
-    print(response["countryData"])
+    print(response.get("countryData"))
 
     # try using req.status_code
-    if response["countryData"] == None:
+    if response.get("countryData") == None:
         print("[INVALID DIRECTION DETECTED] = ", newIP)
         continue
 

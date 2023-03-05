@@ -19,10 +19,8 @@ for i in range(10):
         iplist.append(str(random.randint(1, 255)))
 
     newIP = ".".join(iplist)
-    iplist.clear()
 
     print("New IP: ", newIP)
-    print(iplist)
 
     #network=input("Enter the IP you want to scan and save:  ")
 

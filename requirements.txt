@@ -1,0 +1,4 @@
+SQLAlchemy==2.0.4
+sql==2022.4.0
+ipaddress==1.0.23
+ipinfo==4.4.2

@@ -3,6 +3,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import random
 import ipinfo
+import ipaddress
+
+ipscan = 0
 
 access_token = input("Enter IPINFO token: ")
 handler = ipinfo.getHandler(access_token)
@@ -15,7 +18,13 @@ reps = input("How many IPs do you want to scan? - ")
 
 print("PRESS CTRL + C TO STOP")
 
-#ATENEA PROJECT BY XABIA & OMICRON
+def validateip(ip_string):
+    try:
+        ipaddress.ip_address(ip_string)
+        return
+    except:
+        pass    
+
 
 for i in range(int(reps)):
 
@@ -30,15 +39,11 @@ for i in range(int(reps)):
 
     details = handler.getDetails(newIP)
 
-
-    #==========
-    #IMPORTANTE
-    #==========
-    #NUEVOS TIPOS DE DATOS DARAN ERROR EN UNA BASE DE DATOS EXISTENTE!!!
+    validateip(newIP)
 
     Base = declarative_base()
 
-    #Se especifican los TIPOS DE DATOS que se van a guardar, "variables" bs
+
     class Atenea(Base):
         __tablename__ = "atenea"
 
@@ -50,7 +55,6 @@ for i in range(int(reps)):
         latitude = Column("Latitude", String)
         longitude = Column("Longitude", String)
 
-        #Se ponen "APODOS" a las variables
         def __init__(self, ip, country, countrycode, region, city, latitude, longitude):
             self.ip = ip
             self.country = country
@@ -67,8 +71,16 @@ for i in range(int(reps)):
     engine  = create_engine("sqlite:///atenea.db", echo=True)
     Base.metadata.create_all(bind=engine)
 
+
     Session = sessionmaker(bind=engine)
     session = Session()
+    
+    if "bogon" in details.all:
+        print("Not valid IP")
+        print("What the fuck are you doing in my database")
+        continue
+    else:
+        print("Valid IP")
 
     #GUARDADO DE DATOS
     newdata = Atenea(newIP, 
@@ -79,7 +91,11 @@ for i in range(int(reps)):
                      details.latitude,
                      details.longitude
                 )
+    
     session.add(newdata)
     session.commit()
+
+    ipscan = ipscan + 1
+    print(ipscan)
 
 print("[SCAN FINISHED]")

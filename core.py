@@ -4,8 +4,10 @@ from sqlalchemy.orm import sessionmaker
 import random
 import ipinfo
 import ipaddress
+import time
 
 ipscan = 0
+notvalidips = 0
 
 access_token = input("Enter IPINFO token: ")
 handler = ipinfo.getHandler(access_token)
@@ -78,6 +80,8 @@ for i in range(int(reps)):
     if "bogon" in details.all:
         print("Not valid IP")
         print("What the fuck are you doing in my database")
+
+        notvalidips = notvalidips + 1
         continue
     else:
         print("Valid IP")
@@ -96,6 +100,15 @@ for i in range(int(reps)):
     session.commit()
 
     ipscan = ipscan + 1
-    print(ipscan)
+    
+rows = session.query(Atenea).count()
 
 print("[SCAN FINISHED]")
+print("==================================================")
+print("STATS:")
+print("Time Elapsed: ", time.process_time())
+print("Total Rows in Database: ", rows)
+print("Aprox. Values: ", rows * 7)
+print("Valid IPs Scanned: ", ipscan)
+print("Not Valid IPs: ", notvalidips)
+print("==================================================")

@@ -79,7 +79,7 @@ for i in range(int(reps)):
     
     if "bogon" in details.all:
         print("Not valid IP")
-        print("What the fuck are you doing in my database")
+        print("What the actual fuck are you doing in my database")
 
         notvalidips = notvalidips + 1
         continue

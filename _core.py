@@ -1,10 +1,11 @@
-from sqlalchemy import create_engine, ForeignKey, Column, String, delete, update, Integer, CHAR
+from sqlalchemy import create_engine, Column, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import random
 import ipinfo
 import ipaddress
 import time
+import csv
 
 ipscan = 0
 notvalidips = 0
@@ -112,3 +113,23 @@ print("Aprox. Values: ", rows * 7)
 print("Valid IPs Scanned: ", ipscan)
 print("Not Valid IPs: ", notvalidips)
 print("==================================================")
+
+results = session.query(Atenea).all()
+
+def savedata():
+    with open('atenea.csv', mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(['IP', 'Country', 'Country Code', 'Region', 'City', 'Latitude', 'Longitude'])
+        for row in results:
+            writer.writerow([row.ip, row.country, row.countrycode, row.region, row.city, row.latitude, row.longitude])
+
+    session.close()
+
+    print("Data saved to 'atenea.csv'")
+
+sd = input("Dump DATA in .csv file? (Can be used for _plot.py) Y/N :: ")
+
+if sd == "Y":
+    savedata()
+else:
+    input("Press any key to quit...")

@@ -16,8 +16,11 @@ cities = gpd.read_file(gpd.datasets.get_path("naturalearth_cities"))
 fig, ax = plt.subplots(figsize=(10, 5))
 
 world.plot(ax=ax, color="lightgray", edgecolor="white")
-cities.plot(ax=ax, marker="*", color="red", markersize=8)
+cities.plot(ax=ax, marker="*", color="red", markersize=16, label="Cities")
 
-gdf.plot(ax=ax, marker=".", color="blue", markersize=8)
+gdf.plot(ax=ax, marker=".", color="blue", markersize=8, label="Data Locations")
 
+ax.legend()
+
+plt.title("LOCATION OF OBTAINED DATA")
 plt.show()

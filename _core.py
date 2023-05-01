@@ -88,19 +88,24 @@ for i in range(int(reps)):
         print("Valid IP")
 
     #GUARDADO DE DATOS
-    newdata = Atenea(newIP, 
-                     details.country_name,
-                     details.country,
-                     details.region,
-                     details.city,
-                     details.latitude,
-                     details.longitude
-                )
-    
-    session.add(newdata)
-    session.commit()
+    try:
+        newdata = Atenea(newIP, 
+                        details.country_name,
+                        details.country,
+                        details.region,
+                        details.city,
+                        details.latitude,
+                        details.longitude
+                    )
+        
+        session.add(newdata)
+        session.commit()
 
-    ipscan = ipscan + 1
+        ipscan = ipscan + 1
+    except:
+        print("UNEXPECTED ERROR")
+        print("//////////////////////////////////////////////")
+        continue
     
 rows = session.query(Atenea).count()
 

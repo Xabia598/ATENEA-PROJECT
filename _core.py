@@ -29,84 +29,86 @@ def validateip(ip_string):
         pass    
 
 
-for i in range(int(reps)):
-
-    iplist = []
-
-    for i in range(4):
-        iplist.append(str(random.randint(1, 255)))
-
-    newIP = ".".join(iplist)
-
-    print("New IP: ", newIP)
-
-    details = handler.getDetails(newIP)
-
-    validateip(newIP)
-
-    Base = declarative_base()
-
-
-    class Atenea(Base):
-        __tablename__ = "atenea"
-
-        ip = Column("IP", String, primary_key=True)
-        country = Column("Country", String)
-        countrycode = Column("Country Code", String)
-        region = Column("Region", String)
-        city = Column("City", String)
-        latitude = Column("Latitude", String)
-        longitude = Column("Longitude", String)
-
-        def __init__(self, ip, country, countrycode, region, city, latitude, longitude):
-            self.ip = ip
-            self.country = country
-            self.countrycode = countrycode
-            self.region = region
-            self.city = city
-            self.latitude = latitude
-            self.longitude = longitude
-
-        def __repr__(self):
-            return f"({self.ip}) {self.country} {self.countrycode} {self.region} {self.city} {self.latitude} {self.longitude})"
-
-
-    engine  = create_engine("sqlite:///atenea.db", echo=True)
-    Base.metadata.create_all(bind=engine)
-
-
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    
-    if "bogon" in details.all:
-        print("Not valid IP")
-        print("What the actual fuck are you doing in my database")
-
-        notvalidips = notvalidips + 1
-        continue
-    else:
-        print("Valid IP")
-
-    #GUARDADO DE DATOS
+while ipscan < int(reps):
     try:
-        newdata = Atenea(newIP, 
-                        details.country_name,
-                        details.country,
-                        details.region,
-                        details.city,
-                        details.latitude,
-                        details.longitude
-                    )
-        
-        session.add(newdata)
-        session.commit()
+        iplist = []
 
-        ipscan = ipscan + 1
+        for i in range(4):
+            iplist.append(str(random.randint(1, 255)))
+
+        newIP = ".".join(iplist)
+
+        print("New IP: ", newIP)
+
+        details = handler.getDetails(newIP)
+
+        validateip(newIP)
+
+        Base = declarative_base()
+
+
+        class Atenea(Base):
+            __tablename__ = "atenea"
+
+            ip = Column("IP", String, primary_key=True)
+            country = Column("Country", String)
+            countrycode = Column("Country Code", String)
+            region = Column("Region", String)
+            city = Column("City", String)
+            latitude = Column("Latitude", String)
+            longitude = Column("Longitude", String)
+
+            def __init__(self, ip, country, countrycode, region, city, latitude, longitude):
+                self.ip = ip
+                self.country = country
+                self.countrycode = countrycode
+                self.region = region
+                self.city = city
+                self.latitude = latitude
+                self.longitude = longitude
+
+            def __repr__(self):
+                return f"({self.ip}) {self.country} {self.countrycode} {self.region} {self.city} {self.latitude} {self.longitude})"
+
+
+        engine  = create_engine("sqlite:///atenea.db", echo=True)
+        Base.metadata.create_all(bind=engine)
+
+
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        
+        if "bogon" in details.all:
+            print("Not valid IP")
+            print("What the actual fuck are you doing in my database")
+
+            notvalidips = notvalidips + 1
+            continue
+        else:
+            print("Valid IP")
+
+        #GUARDADO DE DATOS
+        try:
+            newdata = Atenea(newIP, 
+                            details.country_name,
+                            details.country,
+                            details.region,
+                            details.city,
+                            details.latitude,
+                            details.longitude
+                        )
+            
+            session.add(newdata)
+            session.commit()
+
+            ipscan = ipscan + 1
+        except:
+            print("UNEXPECTED ERROR")
+            print("//////////////////////////////////////////////")
+            continue
     except:
-        print("UNEXPECTED ERROR")
-        print("//////////////////////////////////////////////")
-        continue
-    
+        print("ERROR BY API/WEB")
+
 rows = session.query(Atenea).count()
 
 print("[SCAN FINISHED]")

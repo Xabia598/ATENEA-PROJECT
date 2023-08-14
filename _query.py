@@ -1,3 +1,4 @@
+# MADE BY XABIA598 AND OMICRON166
 import sqlite3
 
 print("CTRL + C TO EXIT")

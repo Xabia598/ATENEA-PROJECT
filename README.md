@@ -13,3 +13,11 @@ It generates random IPs and then ipinfo scans them and inserts the data inside a
 ### What can I learn with this?
 
 You can learn simple data base structure, querying, plotting locations and basically how it works.
+
+### How do I install the requirements?
+
+Just type in your terminal:
+
+pip install -r requirements.txt
+
+_Note that this project is just made for fun, not for "professional" purposes, probaby it isnt optimized at 100% or its bad optimized, please understand this :)_
